@@ -1,0 +1,244 @@
+---
+title: "GGPlot2 and its integration with R"
+author: "Joey Miranda"
+date: "9/28/2014"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: null
+email: jmiranda@zagmail.gonzaga.edu
+abstract: The objective of this document's template is to demonstrate some basics
+  of the combination of R and markdown and how they can be knitted together using
+  the knitr package (via the RStudio IDE) to produce beautiful docs/reports.
+---
+
+#Purpose
+
+Assignment 4: To explore many common graphs and how see ggplot2 can affect each graph and how it works with a certain kind of data set or sets
+
+#Data
+```{r}
+## Simulate some data
+
+## 3 Factor Variables
+FacVar1=as.factor(rep(c("level1","level2"),25))
+FacVar2=as.factor(rep(c("levelA","levelB","levelC"),17)[-51])
+FacVar3=as.factor(rep(c("levelI","levelII","levelIII","levelIV"),13)[-c(51:52)])
+
+## 4 Numeric Vars
+set.seed(123)
+NumVar1=round(rnorm(n=50,mean=1000,sd=50),digits=2) ## Normal distribution
+set.seed(123)
+NumVar2=round(runif(n=50,min=500,max=1500),digits=2) ## Uniform distribution
+set.seed(123)
+NumVar3=round(rexp(n=50,rate=.001)) ## Exponential distribution
+NumVar4=2001:2050
+
+simData=data.frame(FacVar1,FacVar2,FacVar3,NumVar1,NumVar2,NumVar3,NumVar4)
+```
+
+#Initialize the libraries used for this page
+```{r}
+library(ggplot2)
+library(reshape2)
+```
+
+#One Variable: Numeric Variable
+```{r}
+ggplot(simData,aes(y=NumVar1,x=1:nrow(simData),group="NumVar1"))+geom_point()+geom_line()+xlab("") ## Index plot: starting off the line with ggplot will initialize the code to utilize ggplot2 for the graph creation. simData will be the dataset used, aes sets the astetics of the graph, y= will set the y axis, x= will set the x axis,group will connect the points with a line, geom_point will set the points on the graph and allow for any visual changes to the points (e.g. color or size), geom_line will set the line connecting each point, xlab will label the x axis 
+```
+
+```{r}
+ggplot(simData,aes(x=NumVar1))+geom_histogram() ## histogram: by adding geom_histogram will create a histogram,assuming you are only using one numeric variable
+```
+
+```{r}
+ggplot(simData,aes(x=NumVar1))+geom_density() ## Kernel density plot: similar to the histogram, adding geom_density will create a density plot
+```
+
+```{r}
+ggplot(simData,aes(x=factor(""),y=NumVar1))+geom_boxplot()+ xlab("") ## box plot: using geom_boxplot will create a boxplot graph
+```
+
+#One Variable: Factor Variable
+```{r}
+ggplot(simData,aes(x=FacVar3))+geom_bar() ## barplot: setting and factor variable to the x axis and adding geom_bar will create a bar graph
+```
+
+```{r}
+## pie chart - Not the best graph --- use with caution
+ggplot(simData,aes(x = factor(""), fill=FacVar3, label=FacVar3))+geom_bar()+ coord_polar(theta = "y")  +scale_x_discrete("") ## fill will change the color of each pie slice, in this case it set each factor variable 'FacVar3' toa  different color, and labeled them as well, adding geom_bar at the end will create the bar graph, coord_polar is actually create a stacked bar chart with polar coordinates, which means it is shaped circular, theta = y sets the map angle to y, scale_x_discrete sets the values/labels around the pie chart 
+```
+
+#Two Variables: Two Numeric Variables
+```{r}
+simtmp=simData[,c(4:5)] ## 4th and 5th columns are NumVar1 and NumVar2
+simtmp$index=1:nrow(simtmp)
+simtmpmelt=melt(simtmp,id=c("index"))
+
+## line plots with observation number as index
+ggplot(simtmpmelt,aes(y=value,x=index,color=variable))+geom_point()+geom_line()+xlab("") ## sets NumVar1/2 to the variable simtmp, then sets the axis to fit both data sets, melts, or reshapes, the data to fit the data sets on one graph, then plots the graph using the normal function, color is assigned to each line using color=
+```
+
+```{r}
+## Let's draw density functions for NumVar1 & NumVar2
+ggplot(simtmpmelt,aes(x=value,color=variable))+geom_density() ##using the same melted datasets, but instead using geom_density to create a density plot
+```
+
+```{r}
+## scatter plot
+ggplot(simData,aes(x=NumVar1,y=NumVar2))+geom_point() ##setting two numeric variables to each axis and using geom_point will create a scatterplot
+```
+
+#Two Variables: Two Factor Variables
+```{r}
+## Mosaic plot: ggMMplot function - thanks to Edwin on Stackoverflow: http://stackoverflow.com/questions/19233365/how-to-create-a-marimekko-mosaic-plot-in-ggplot2
+
+ggMMplot <- function(var1, var2){
+  require(ggplot2)
+  levVar1 <- length(levels(var1))
+  levVar2 <- length(levels(var2))
+  
+  jointTable <- prop.table(table(var1, var2))
+  plotData <- as.data.frame(jointTable)
+  plotData$marginVar1 <- prop.table(table(var1))
+  plotData$var2Height <- plotData$Freq / plotData$marginVar1
+  plotData$var1Center <- c(0, cumsum(plotData$marginVar1)[1:levVar1 -1]) +
+    plotData$marginVar1 / 2
+  
+  ggplot(plotData, aes(var1Center, var2Height)) +
+    geom_bar(stat = "identity", aes(width = marginVar1, fill = var2), col = "Black") +
+    geom_text(aes(label = as.character(var1), x = var1Center, y = 1.05)) 
+}
+ggMMplot(simData$FacVar2, simData$FacVar3)
+```
+
+```{r}
+## barplots
+
+bartabledat = as.data.frame(table(simData$FacVar2, simData$FacVar3)) ## get the cross tab: essentially combines the two factor variables together to be able to be plotted on one graph
+ggplot(bartabledat,aes(x=Var2,y=Freq,fill=Var1))+geom_bar(position="dodge") ## plot: plots the bar graph using geom_bar, using position=dodge will make it so the bars are placed next to each other
+```
+
+```{r}
+ggplot(bartabledat,aes(x=Var2,y=Freq,fill=Var1))+geom_bar() ## stacked: same as the last graph but without the position=dodge so that the bars are stacked instead
+```
+
+```{r}
+bartableprop =as.data.frame(prop.table(table(simData$FacVar2, simData$FacVar3),2)*100) ##this sets the same data as before to be out of 100% instead of actual values
+ggplot(bartableprop,aes(x=Var2,y=Freq,fill=Var1))+geom_bar() ## Stacked 100%: plots the bar graph
+```
+
+#Two Variables: One Factor and One Numeric
+```{r}
+## Box plots for the numeric var over the levels of the factor var
+ggplot(simData,aes(x=FacVar1,y=NumVar1))+geom_boxplot() ##setting the factor variable on x and the numeric variable on and using geom_boxplot will create two boxes
+```
+
+```{r}
+## density plot of numeric var across multiple levels of the factor var
+ggplot(simData,aes(x=NumVar1,color=FacVar1))+geom_density() ##using color=FacVar1 will assign the numeric variable to both facotr variables and color each factor varibale a different color
+```
+
+```{r}
+meanagg = aggregate(simData$NumVar1, list(simData$FacVar3), mean) ##gets the mean of the numeric variable over the levels of a facotr variable and assigns it to the variable meanagg
+ggplot(meanagg,aes(x=Group.1,y=x))+geom_point()+coord_flip() ## Dot Chart equivalent: using the newly create mean agg, graphs the data set, flips the coordinates using coord_flip
+```
+
+```{r}
+ggplot(meanagg,aes(x=Group.1,y=x))+geom_bar() ## Bar plot: same as the last graph but uses geom_bar instead to create a bar graph
+```
+
+#Three Variables: Three Factor Variables
+```{r}
+Threebartable = as.data.frame(table(simData$FacVar1, simData$FacVar2, simData$FacVar3)) ## sets each factor variable to the variable threebartable
+ggplot(Threebartable,aes(x=Var3,y=Freq,fill=Var2))+geom_bar(position="dodge")+facet_wrap(~Var1) ## Bar plot with facetting: plots the bar graph, sets each level of factor variable 1 next to each other using facet_wrap
+```
+
+#Three Variables: One Numeric and Two Factor Variables
+```{r}
+## boxplot of NumVar1 over an interaction of 6 levels of the combination of FacVar1 and FacVar2
+ggplot(simData,aes(x=FacVar2,y=NumVar1, fill=FacVar1))+geom_boxplot() ##compares numvar1 in relation to facvar2 iterated twice using facvar1
+```
+
+```{r}
+## Mean of 1 Numeric veriable over levels of two factor variables
+meanaggg = aggregate(simData$NumVar1, list(simData$FacVar1, simData$FacVar2), mean) ## sets all the varibales to meanaggg
+## Dot Chart equivalent
+ggplot(meanaggg,aes(x=Group.2,y=x,color=Group.2))+geom_point()+coord_flip()+facet_wrap(~Group.1, ncol=1) ##plots meanaggg on a dot chart, sets the graphs on top of each other (or in one column) using facet_wrap(ncol=1)
+```
+
+```{r}
+## Interaction chart - line chart
+ggplot(meanaggg,aes(x=Group.2,y=x,color=Group.1, group=Group.1))+geom_point()+geom_line() ##using the same data set from the last graph, plots all the points on one graph this time in relation to facvar 2 and color codes each line which is the interaction with facvar1
+```
+
+```{r}
+## And bar plot
+ggplot(meanaggg,aes(x=Group.2,y=x))+geom_bar()+facet_wrap(~Group.1) ##creates a bargraph with the same data set meanaggg, and places the graphs next to each other
+```
+
+#Three Variables: Two Numeric and One Factor Variables
+```{r}
+## Scatter plot
+ggplot(simData,aes(x=NumVar1,y=NumVar2,color=FacVar1))+geom_point() ##plots two different numeric varibles on a graph 'numvar1/2' and color codes them based on each factor variable
+```
+
+#Three Variables: Three Numeric Variables
+```{r}
+## NumVar4 is 2001 through 2050... possibly, a time variable - use that as the x-axis
+simtmpp=simData[,c(4,5,7)] ##'NumVar1/2/4'
+simtmppmelt=melt(simtmpp,id=c("NumVar4")) ##takes 3 numeric variables and melts them into one called simtmppmelt
+ggplot(simtmppmelt,aes(x=NumVar4,y=value,color=variable,group=variable))+geom_point()+geom_line() ##plots two lines 'Numvar1/2' over the x axis which is Numvar4, which in this example is the years 2001-2050
+```
+
+```{r}
+## Extra: Stacked Area Graph
+ggplot(simtmppmelt,aes(x=NumVar4,y=value,fill=variable))+geom_area(position="stack") ##using the same dataset as the last graph but using geom_area will create an are graph, using position=stack will stack the variables on the graph
+```
+
+```{r}
+## Extra: 100% stacked area graph
+ggplot(simtmppmelt,aes(x=NumVar4,y=value,fill=variable))+geom_area(position="fill") ## same as the last graps but instead of using position=stack use fill to fill the entire graph, making it out of 100%
+```
+
+```{r}
+## ## Bubble plot - scatter plot of NumVar1 and NumVar2 with individual observations sized by NumVar3
+ggplot(simData,aes(x=NumVar1,y=NumVar2,size=NumVar3))+geom_point() ##setting two numeric varibales on each axis then setting the size to a third numeric varible will create a bubble plot
+```
+
+#Scatterplot Matrix of all Numeric Vars, colored by a Factor variable
+```{r}
+#Thanks to Gaston Sanchez for the function: http://gastonsanchez.wordpress.com/2012/08/27/scatterplot-matrices-with-ggplot/
+ makePairs <- function(data) 
+{
+  grid <- expand.grid(x = 1:ncol(data), y = 1:ncol(data))
+  grid <- subset(grid, x != y)
+  all <- do.call("rbind", lapply(1:nrow(grid), function(i) {
+    xcol <- grid[i, "x"]
+    ycol <- grid[i, "y"]
+    data.frame(xvar = names(data)[ycol], yvar = names(data)[xcol], 
+               x = data[, xcol], y = data[, ycol], data)
+  }))
+  all$xvar <- factor(all$xvar, levels = names(data))
+  all$yvar <- factor(all$yvar, levels = names(data))
+  densities <- do.call("rbind", lapply(1:ncol(data), function(i) {
+    data.frame(xvar = names(data)[i], yvar = names(data)[i], x = data[, i])
+  }))
+  list(all=all, densities=densities)
+}
+
+## expanding numeric columns for pairs plot
+gg1 = makePairs(simData[,4:7])
+
+## new data frame 
+simDatabig = data.frame(gg1$all,simData[,1:3])
+
+## pairs plot
+ggplot(simDatabig, aes_string(x = "x", y = "y")) + 
+  facet_grid(xvar ~ yvar, scales = "free") + 
+  geom_point(aes(colour=FacVar2), na.rm = TRUE) + 
+  stat_density(aes(x = x, y = ..scaled.. * diff(range(x)) + min(x)), 
+               data = gg1$densities, position = "identity", 
+               colour = "grey20", geom = "line") ## takes every numeric varibale set and sees its interaction with every other numeric variable, and color codes each in relation to a factor variable
+```

@@ -1,0 +1,19 @@
+---
+title: "Assignment 2"
+author: "Joey Miranda"
+date: "December 14, 2014"
+output: html_document
+---
+Joey Miranda
+Prof. Patil
+MKTG 489
+Design Issues
+  When creating a graph, not only is it important to focus on how people will perceive the graph, but also how relevant the information is to the point you are trying to make, and how well the information is conveyed through the graph. Many times when creating a graph is it easy to look at it and say “maybe some cool shapes and colors will help spruce it up”, sometimes this can be acceptable but if you are creating a graph specifically to show the reader the point you are trying to make in a more simple graphic view, crazy colors and shapes is not the route to go.
+<br>  
+	When in high school, I frequently used Excel to create different graphs for my assignments, randomly switching from bar charts to pie charts to scatter plots and line graphs, the list can go on and on. But I have now learned that just ambiguously choosing a graph type and throwing to cool colors in it is not the most effective way to make a point through a graph. When trying to reiterate a point it is advised to first boil down the point you are trying to make and convey an understanding so that every point of information is understood prior to even looking at the graph. Once the reader actually starts examining it they should be able to clearly see the point you are trying to make, and have any other relevant information readily available on said graph (e.g. data points, axis labels, etc…).
+<br>  
+  Not only is it important to have relevant information on your graph but also you must make sure it is all absolutely necessary. Graphs can be very difficult to near impossible to read is there is too much information scattered all over your graph, like having every single data point labeled. Having loads of information can also detract the reader from the point you intended to make, have the reader not get the point you are trying to make at all, or have the reader infer something else that was not your intention. Not to say too much information is bad for any graph, some graphs can contain tons of information and still convey the point it is trying to make, but that all falls into how to they designed the graph and narrowing down the information on it to the absolute necessities.
+<br>  
+  Having too much information doesn’t always have to be the issue though, you could put too little. Although it may seem hard to believe, sometimes people create a graph and by trying to make it as simple as possible, they over simplify until the graph doesn’t have enough information to convey a point. This can confuse the reader because they might not understand what the point of the graph is or infer a point from the graph that is completely irrelevant to the point you are trying to make.
+<br>  
+  It is safe to say there are many different factors you need to keep balanced when crating a graph, like the visual aesthetic of the graph, visual indicators that help draw attention to the main point(s) of the graph,avoiding too much information so the graph is not cluttered and confusing while not removing so much information that no real point can be derived from the graph. If all of these elements can be kept in check then you will be able to create an effective and efficient graph for all to learn from!

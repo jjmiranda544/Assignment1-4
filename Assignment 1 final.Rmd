@@ -1,0 +1,17 @@
+---
+title: "Assignment 1"
+author: "Joey Miranda"
+date: "December 14, 2014"
+output: html_document
+---
+
+Joey Miranda
+Prof. Patil
+MKTG 489
+Assignment 1
+
+  In the business world it is extremely important to be able to understand the important data as quick as possible, to alleviate any wasted time and effort, so that decisions can be made promptly and accurately, given any situation. The ability to take any data and turn it into a visual piece that can be easily read, examined, and understood is ever so valuable for any business or really any decision that needs to be made based off data.
+<br>
+	It is apparent from reading these articles that; obviously, the visual part of data visualization is the most important aspect. These readings go though numerous accounts of theories that state how the brain perceives patterns and visual differences amongst groupings of similar objects. Each of these theories help get a better understanding of how the brain and eyes work in recognizing patterns or changes in patters but more specifically, what things the eyes and brain react to first subconsciously. The term, preattentive attributes, is used to describe those simple attributes of patterns that immediately catch our attention before our brain even can process everything that is there. There are many different forms of this that range form orientation of the objects, size, shape, and color. An example would be a large circle amongst a group of small circles, or a red square in the middle of a bunch of blue squares. More variations of this idea can be found within the Gestalt Principles and analytical patterns. Some of Gestalt Principles include visual distinctions like proximity of objects, whether certain objects are enclosed or not, or which object comes to the foreground of sight and which one is the background (e.g. vase and two faces illusion). Analytical patterns are more in the area of comparing different objects, like which bar is high and which bar is low, if lines intersect or are parallel, or if some patters seem more random or more repetitive.  There are many different variations of this theory, some get very complex, but they all stem from this idea.
+<br>
+	It would be wise when entering into the data visualization world to become familiar with these theories because when working on a project, all your time and effort can go to waste if the end result is misinterpreted or not understood because of distracting pieces of data, unnecessary data, or an unreadable chart or graph. 
